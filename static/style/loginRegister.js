@@ -1,6 +1,7 @@
 import { fetchapi } from "./fetchJson";
 
 document.addEventListener("DOMContentLoaded", () => {
+    
     const logginform = document.getElementById('login-form')
     logginform.addEventListener('submit', async (e) => {
         e.preventDefault()

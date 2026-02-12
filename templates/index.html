@@ -8,6 +8,106 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+    <div id="app-container" data-loggedin="{{.IsLogin.LoggedIn}}">
+        <!-- Login view -->
+        <section id="login-view">
+            <div class="login-container">
+                <h2 style="color: rgb(0, 47, 255);">Connexion</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Email ou pseudo</label>
+                        <input type="text" id="username" placeholder="Votre email ou pseudo" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" placeholder="Votre mot de passe" required />
+                    </div>
+
+                    <button id="btn-login" type="submit" class="btn-login">Se connecter</button>
+                </form>
+
+                <p class="redirect">
+                    Pas encore inscrit ?
+                    <a href="#" class="link-register">Créer un compte</a>
+                </p>
+
+                <div id="login-error" class="error-message">Erreur de login</div>
+                <div id="login-success" class="success-message">Connexion réussie !</div>
+            </div>
+        </section>
+    </div>
+     <div id="register-container">
+        <!-- Register view -->
+        <section id="register-view">
+            <div class="register-container">
+                <h2 style="color: rgb(0, 47, 255);">Inscription</h2>
+
+                <form id="register-form">
+                    <!-- Nickname -->
+                    <div class="form-group">
+                        <label for="nickname">Pseudo</label>
+                        <input type="text" id="nickname" placeholder="Votre pseudo" required />
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="form-group">
+                        <label for="firstname">Prénom</label>
+                        <input type="text" id="firstname" placeholder="Votre prénom" required />
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="form-group">
+                        <label for="lastname">Nom</label>
+                        <input type="text" id="lastname" placeholder="Votre nom" required />
+                    </div>
+
+                    <!-- Age -->
+                    <div class="form-group">
+                        <label for="age">Âge</label>
+                        <input type="number" id="age" placeholder="Votre âge" min="13" max="120" required />
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="form-group">
+                        <label for="gender">Genre</label>
+                        <select id="gender" required>
+                            <option value="">Sélectionnez votre genre</option>
+                            <option value="male">Homme</option>
+                            <option value="female">Femme</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" placeholder="Votre e-mail" required />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="passwordre" placeholder="Votre mot de passe" required />
+                    </div>
+
+                    <!-- Submit -->
+                    <button id="btn-register" type="submit" class="btn-register">S'inscrire</button>
+                </form>
+
+                <!-- Link to login -->
+                <p class="redirect">
+                    Déjà inscrit ?
+                    <a href="#" class="link-login">Se connecter</a>
+                </p>
+
+                <!-- Messages -->
+                <div id="register-error" class="error-message">Erreur lors de l'inscription</div>
+                <div id="register-success" class="success-message">Inscription réussie !</div>
+            </div>
+        </section>
+    </div>
+    
     <!-- MAIN CONTENT (SPA POSTS) -->
     <div class="main-section">
         <button id="btn-logout" type="button" class="btn-logout">Se déconnecter</button>
