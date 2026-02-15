@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"net/http"
+	"text/template"
 
 	"forum/helpers"
 )
-// show login page with render func 
+
+// show login page with render func
 
 func Showloginhandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -14,5 +16,11 @@ func Showloginhandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	helpers.Render(w, "login.html", http.StatusOK, map[string]string{"Error": "", "Username": ""})
+	tmpl, err := template.ParseFiles("templates/index.html")
+	if err != nil {
+		return
+	}
+	if err := tmpl.Execute(w, nil); err != nil {
+		return
+	}
 }

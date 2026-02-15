@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // ✅ Vider le container des posts
         const container = document.getElementById('posts-container');
-       
+        
         
     } catch (err) {
         console.error("Erreur logout:", err);
