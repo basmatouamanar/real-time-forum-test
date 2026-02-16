@@ -75,7 +75,6 @@
                             <option value="">Sélectionnez votre genre</option>
                             <option value="male">Homme</option>
                             <option value="female">Femme</option>
-                            <option value="other">Autre</option>
                         </select>
                     </div>
 
@@ -111,9 +110,33 @@
     <!-- MAIN CONTENT (SPA POSTS) -->
     <div class="main-section">
         <button id="btn-logout" type="button" class="btn-logout">Se déconnecter</button>
+        <div id ="post-creation"></div>
         <div id="posts-container"></div>
     </div>
 
     <script src="/static/style/fetchJson.js"></script>
 </body>
 </html>
+
+<!--
+<section class="create-post">
+            <form action="/createpost" method="POST" enctype="multipart/form-data" class="create-post-form">
+                <h1 class="title-create-post">Create New Post</h1>
+                <input type="text" name="title" placeholder="Title" class="inputs title" maxlength="100" required>
+                <textarea type="text" name="description" placeholder="Description" class="inputs description"
+                    maxlength="1000" required></textarea>
+                <div class="categories">
+                    {{ range .Categories }}
+                    <input type="checkbox" name="categories" id="create-{{ .Category }}" value="{{ .ID }}"
+                        class="category" data-category-name="{{ .Category }}">
+                    <label for="create-{{ .Category }}" class="labels">{{ .Category }}</label>
+                    {{ end }}
+                </div>
+                <div class="upload-img">
+                    <input type="file" name="choose-file" id="choose-file" class="choose-file">
+                </div>
+                <button type="submit" class="btn btn-create-post">Create Post</button>
+            </form>
+        </section>
+
+-->

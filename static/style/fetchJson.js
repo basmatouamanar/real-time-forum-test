@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: params.toString()
             });
-            
+
             const data = await res.json();
 
             if (!res.ok) {
@@ -145,29 +145,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // LOGOUT
     logoutbtn.addEventListener('click', async (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
-        await fetch('/logout', { method: 'POST' });
-        
-        console.log('it done')
-        loginview.style.display = 'flex';
-        mainSection.style.display = 'none';
-        logoutbtn.style.display = 'none';
-        
-        // ✅ Vider le container des posts
-        const container = document.getElementById('posts-container');
-        
-        
-    } catch (err) {
-        console.error("Erreur logout:", err);
-    }
-});
+        try {
+            await fetch('/logout', { method: 'POST' });
+
+            console.log('it done')
+            loginview.style.display = 'flex';
+            mainSection.style.display = 'none';
+            logoutbtn.style.display = 'none';
+
+            // ✅ Vider le container des posts
+            const container = document.getElementById('posts-container');
+
+
+        } catch (err) {
+            console.error("Erreur logout:", err);
+        }
+    });
 });
 
-// ============================================
-// FETCH POSTS
-// ============================================
+
 async function fetchapi() {
     const container = document.getElementById('posts-container');
 
@@ -179,6 +177,8 @@ async function fetchapi() {
         }
 
         const pageData = await response.json();
+        displayCreationPost(pageData)
+        console.log('here')
         displayPosts(pageData);
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -186,7 +186,165 @@ async function fetchapi() {
     }
 }
 
-// ... reste du code (displayPosts, createPostElement, etc.) ...
+/*
+  container.innerHTML = '';
+    
+    if (comments.length === 0) {
+        container.innerHTML = '<p class="noComments">No comments yet</p>';
+        return;
+    }
+
+    comments.forEach(comment => {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comments';
+        commentDiv.innerHTML = `
+            <img src="/static/images/user.png" alt="User Profile" class="profile-comment">
+            <div class="comment-content-wrapper">
+                <span class="username">${escapeHtml(comment.userName)}</span>
+                <p class="comment-content">${escapeHtml(comment.commentText)}</p>
+                <span class="post-time">${new Date(comment.creationDate).toLocaleDateString()}</span>
+            </div>
+        `;
+        container.appendChild(commentDiv);
+    });
+*/
+
+function displayCreationPost(pageData) {
+    const container = document.getElementById('post-creation')
+    const containerDiv = document.createElement('div')
+    const connectUsername = pageData.connectUserName
+    container.innerHTML = ''
+    // ✅ Générer les checkboxes de catégories
+    let categoriesHTML = '<h3>Catégories :</h3>'
+    pageData.categories.forEach(cat => {
+        categoriesHTML += `
+            <label class="category-label">
+                <input type="checkbox" name="categories" value="${cat.id}"> 
+                ${cat.category}
+            </label>
+        `
+    })
+    
+    containerDiv.innerHTML = `
+    <form class="create-post-form">
+        <h1 class="title-create-post">Create New Post</h1>
+        
+        <input type="text" name="title" placeholder="Title" class="inputs title" maxlength="100" required>
+        
+        <textarea name="description" placeholder="Description" class="inputs description"
+            maxlength="1000" required></textarea>
+        
+        <div class="categories">
+            ${categoriesHTML}
+        </div>
+        
+        <div class="upload-img">
+            <label for="choose-file">Image (optionnel) :</label>
+            <input type="file" name="choose-file" id="choose-file" class="choose-file" 
+                   accept="image/jpeg,image/jpg,image/png,image/gif">
+        </div>
+        
+        <button type="submit" class="btn btn-create-post">Create Post</button>
+    </form>
+    `
+    
+    container.appendChild(containerDiv)
+    
+    containerDiv.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        
+        const title = containerDiv.querySelector('[name="title"]').value.trim()
+        const description = containerDiv.querySelector('[name="description"]').value.trim()
+        const fileInput = containerDiv.querySelector('#choose-file')
+        
+        if (!title || !description) {
+            alert("Le titre et la description sont requis")
+            return
+        }
+        
+        const selectedCategories = Array.from(
+            containerDiv.querySelectorAll('[name="categories"]:checked')
+        ).map(checkbox => checkbox.value)
+        
+        if (selectedCategories.length === 0) {
+            alert("Veuillez sélectionner au moins une catégorie")
+            return
+        }
+        
+        const formData = new FormData()
+        formData.append('title', title)
+        formData.append('description', description)
+        
+        selectedCategories.forEach(catId => {
+            formData.append('categories', catId)
+        })
+        
+        if (fileInput.files.length > 0) {
+            formData.append('choose-file', fileInput.files[0])
+        }
+        
+        try {
+            const res = await fetch('/createpost', {
+                method: "POST",
+                credentials: "same-origin",
+                body: formData // Le navigateur ajoute automatiquement multipart/form-data
+            });
+            
+            const data = await res.json()
+
+            if (!res.ok) {
+                console.log("Erreur:", data);
+                alert(data.error || "Erreur lors de la création du post");
+                return;
+            }
+            
+            console.log("✅ Post créé:", data)
+            alert("Post créé avec succès !")
+            
+            // ✅ Convertir les IDs de catégories en noms
+            const categoryNames = data.categories.map(catId => {
+                const cat = pageData.categories.find(c => c.id === parseInt(catId))
+                return cat ? cat.category : "Unknown"
+            })
+            
+            const newPost = {
+                id: data.postId,
+                title: data.title,
+                description: data.description,
+                imageUrl: data.imageUrl,
+                userName: data.author,
+                creationDate: data.date,
+                categories: categoryNames
+            }
+            
+            addNewPostToDOM(newPost)
+            
+           
+            
+        } catch (err) {
+            console.error("Erreur fetch:", err);
+            alert("Erreur réseau ou serveur");
+        }
+    })
+}
+
+function addNewPostToDOM(post) {
+    const postContainer = document.getElementById('posts-container')
+    
+    const reactionStats = { likesCount: 0, dislikesCount: 0 }
+    const userReaction = null
+    const comments = []
+    
+    const postElement = createPostElement(post, reactionStats, userReaction, comments)
+    
+    postContainer.insertBefore(postElement, postContainer.firstChild)
+}
+//function 
+/*
+ const selectedCategories = Array.from(
+            containerDiv.querySelectorAll('[name="categories"]:checked')
+        ).map(checkbox => checkbox.value)
+*/
 
 function displayPosts(pageData) {
     const container = document.getElementById('posts-container');
@@ -201,7 +359,7 @@ function displayPosts(pageData) {
         const reactionStats = pageData.reactionStats[post.id] || { likesCount: 0, dislikesCount: 0 };
         const userReaction = pageData.userReactions[post.id]; // 1 = like, -1 = dislike
         const comments = pageData.comments[post.id] || [];
-        
+
         const postElement = createPostElement(post, reactionStats, userReaction, comments);
         container.appendChild(postElement);
     });
@@ -214,6 +372,7 @@ function createPostElement(post, reactionStats, userReaction, comments) {
     postDiv.id = `post-${post.id}`;
 
     postDiv.innerHTML = `
+    
         <div class="top-section">
             <div class="full-profile">
                 <img src="/static/images/user.png" alt="User Profile" class="profile-image">
@@ -272,14 +431,14 @@ function createPostElement(post, reactionStats, userReaction, comments) {
 
     // Attach event listeners
     attachPostEvents(postDiv, comments);
-    
+
     return postDiv;
 }
 
 
 function attachPostEvents(postElement, comments) {
     const postId = postElement.id.replace('post-', '');
-    
+
     // REACTION FORM
     const reactionForm = postElement.querySelector('.reaction-form');
     reactionForm.addEventListener('submit', async (e) => {
@@ -320,7 +479,7 @@ function attachPostEvents(postElement, comments) {
     const commentToggle = postElement.querySelector('.comment-toggle');
     const commentsBox = postElement.querySelector('.comments-box');
     const commentsList = postElement.querySelector('.comments-list');
-    
+
     commentToggle.addEventListener('click', () => {
         if (commentsBox.style.display === 'none') {
             commentsBox.style.display = 'block';
@@ -361,7 +520,7 @@ function attachPostEvents(postElement, comments) {
 
             addCommentToDOM(data, commentForm);
             commentForm.querySelector("input[name='comment']").value = "";
-            
+
             // Update comment count
             const commentToggle = postElement.querySelector('.comment-toggle');
             const currentCount = parseInt(commentToggle.textContent.match(/\d+/)[0]);
@@ -402,7 +561,7 @@ function updateReactionUI(form, reactionData) {
 
 function renderComments(container, comments) {
     container.innerHTML = '';
-    
+
     if (comments.length === 0) {
         container.innerHTML = '<p class="noComments">No comments yet</p>';
         return;
