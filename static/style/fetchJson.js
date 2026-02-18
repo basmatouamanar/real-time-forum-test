@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             console.log("Login successful!");
-            alert("Connexion réussie !");
+            //alert("Connexion réussie !");
 
             // Masquer login/register
             loginview.style.display = 'none';
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             console.log("Register successful!");
-            alert("Inscription réussie !");
+            //alert("Inscription réussie !");
 
             // Retour au login
             registerview.style.display = 'none';
@@ -214,11 +214,11 @@ function displayCreationPost(pageData) {
     const containerDiv = document.createElement('div')
     const connectUsername = pageData.connectUserName
     container.innerHTML = ''
-    // ✅ Générer les checkboxes de catégories
+    // Générer les checkboxes de catégories
     let categoriesHTML = '<h3>Catégories :</h3>'
     pageData.categories.forEach(cat => {
         categoriesHTML += `
-            <label class="category-label">
+            <label class="labels">
                 <input type="checkbox" name="categories" value="${cat.id}"> 
                 ${cat.category}
             </label>
@@ -226,7 +226,7 @@ function displayCreationPost(pageData) {
     })
     
     containerDiv.innerHTML = `
-    <form class="create-post-form">
+    <form class="create-post">
         <h1 class="title-create-post">Create New Post</h1>
         
         <input type="text" name="title" placeholder="Title" class="inputs title" maxlength="100" required>
@@ -299,7 +299,7 @@ function displayCreationPost(pageData) {
             }
             
             console.log("✅ Post créé:", data)
-            alert("Post créé avec succès !")
+            //alert("Post créé avec succès !")
             
             // ✅ Convertir les IDs de catégories en noms
             const categoryNames = data.categories.map(catId => {

@@ -81,7 +81,7 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 	query := `INSERT INTO comments (comment, postId, userId, creationDate) 
 	          VALUES (?, ?, ?, ?)`
 
-	creationDate := time.Now().Format("2006-01-02 15:04:05")
+	creationDate := time.Now().Format("2006-01-02 15:04")
 	errExec := database.ExecuteData(query, commentText, postID, userID, creationDate)
 	if errExec != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -97,7 +97,7 @@ func CreateCommentHandler(w http.ResponseWriter, r *http.Request) {
 		"postId":   postIDStr,
 		"comment":  commentText,
 		"userName": username, 
-
+		"creationDate": creationDate, 
 		"message": "Comment added successfully",
 	})
 }
